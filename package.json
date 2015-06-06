@@ -1,0 +1,30 @@
+{
+  "name": "@atirip/rectangle",
+  "description": "General purpose, parallelogram style rectangle library.",
+  "version": "1.0.0",
+  "main": "rectangle.js",
+  "author": "Priit Pirita <atirip@yahoo.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atirip/rectangle.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "rectangle"
+  ],
+  "dependencies": {
+    "@atirip/matrix": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^1.5.x",
+    "mocha": "^1.8.x",
+    "mocha-eslint": "^0.1.7"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "bugs": {
+    "url": "https://github.com/atirip/rectangle/issues"
+  },
+  "homepage": "https://github.com/atirip/rectangle#readme"
+}
