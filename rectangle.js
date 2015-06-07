@@ -111,7 +111,7 @@
 	function create(Matrix) {
 
 		if ( !Matrix) {
-			throw new ReferenceError('Rectangle\'s dependancy Matrix is not defined');
+			throw new ReferenceError('Rectangle\'s dependency (Matrix) is not available');
 		}
 
 		boundaries = new BaseRectangle();
