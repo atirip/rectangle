@@ -15,38 +15,17 @@ A way to describe and manipulate any 2D (also rotated) rectangle.
 	$ npm install @atirip/rectangle
 
 Or clone this repo.  
-It depends of @atirip/matrix.
+It has @atirip/matrix as submodule
 
 ## Usage
 
+	import {Rectangle} from './rectangle.js';
 
-#####Standard browser use
-
-	<script src="rectangle.js"></script>
-	<script>
-		var rect = new atirip.Rectangle();
-	</script>
-
-
-- no minified version is supplied
-- it attaches itself in 'atirip' namespace
-
-#####AMD
-
-	require(["rectangle"], function(Rectangle) {
-	  // ...
-	});
-	
-	
-#####In nodejs/browserify
-
-	var Rectangle = require("@atirip/rectangle");
-	
 ## API
 
-### Rectangle(...)	
+### new Rectangle(...)	
 
-Creates new rectangle, `new` is optional. Initial values are stashed automatically.  
+Creates new rectangle. Initial values are stashed automatically.  
 Parameters can be:
 
 <dl>
@@ -168,6 +147,7 @@ Save current dimensions as initial ones.
 	Instance of Matrix (<a href="https://github.com/atirip/matrix">https://github.com/atirip/matrix</a>). Apply that matrix to rectangle.
 </dd>
 </dl>
+
 ### absTransform(originX, originY, x, y, sx, angle, sy)
 Transform to explicit values given.
 <dl>

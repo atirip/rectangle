@@ -1,21 +1,19 @@
-var expect = require('chai').expect;
-var lint = require('mocha-eslint');
 
-var file = './rectangle.js';
-
-var Rectangle = require(file);
-var Matrix = require('@atirip/matrix');
+import { expect } from 'chai';
+import {Matrix} from './matrix/matrix.js';
+import {Rectangle} from './rectangle.js';
+import lint from 'mocha-eslint';
 
 describe("Rectangle", function() {
 
-	lint([file]);
+	lint(['./rectangle.js']);
 
 	it('should be a function', function () {
 		expect(Rectangle).to.be.a('function');
 	});
 
 	it('should accept 4 numeric parameters', function () {
-		var R = Rectangle(1,2,3,4);
+		var R = new Rectangle(1,2,3,4);
 		expect(R.x).to.be.equal(1);
 		expect(R.y).to.be.equal(2);
 		expect(R.width).to.be.equal(3);
@@ -23,7 +21,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should accept 2 numeric parameters', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		expect(R.x).to.be.equal(0);
 		expect(R.y).to.be.equal(0);
 		expect(R.width).to.be.equal(3);
@@ -31,7 +29,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should accept 3 points as parameters', function () {
-		var R = Rectangle({x:1, y:1}, {x:5, y:1}, {x:1, y:6});
+		var R = new Rectangle({x:1, y:1}, {x:5, y:1}, {x:1, y:6});
 		expect(R.x).to.be.equal(1);
 		expect(R.y).to.be.equal(1);
 		expect(R.width).to.be.equal(4);
@@ -39,13 +37,13 @@ describe("Rectangle", function() {
 	});
 
 	it('should accept Rectangle as parameter (clone)', function () {
-		var R = Rectangle( Rectangle(1,2,3,4) );
+		var R = new Rectangle( new Rectangle(1,2,3,4) );
 		expect(R.x).to.be.equal(1);
 		expect(R.y).to.be.equal(2);
 		expect(R.width).to.be.equal(3);
 		expect(R.height).to.be.equal(4);
 
-		var R = Rectangle( Rectangle(1,2,3,4), true );
+		var R = new Rectangle( new Rectangle(1,2,3,4), true );
 		R.width = 7;
 		R.height = 6;
 		expect(R.x).to.be.equal(1);
@@ -64,17 +62,17 @@ describe("Rectangle", function() {
 	});
 
 	it('should accept Rectangle as parameter (copy)', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.absTransform(150, 150, 0, 0, 2, 45, 2);
-		var RR = Rectangle(R);
+		var RR = new Rectangle(R);
 		RR.applyMatrix ( R.matrix.inverse() );
-		expect( RR.equal( Rectangle(0, 0, 200, 100) ) ).to.be.ok;
+		expect( RR.equal( new Rectangle(0, 0, 200, 100) ) ).to.be.ok;
 	});
 
 	// all constructor functions actually test x,y,width,height getters
 
 	it('should change width', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		R.width = 6;
 		expect(R.x).to.be.equal(0);
 		expect(R.y).to.be.equal(0);
@@ -83,7 +81,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should change height', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		R.height = 6;
 		expect(R.x).to.be.equal(0);
 		expect(R.y).to.be.equal(0);
@@ -92,7 +90,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should change x', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		R.x = 6;
 		expect(R.x).to.be.equal(6);
 		expect(R.y).to.be.equal(0);
@@ -101,7 +99,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should change y', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		R.y = 6;
 		expect(R.x).to.be.equal(0);
 		expect(R.y).to.be.equal(6);
@@ -110,7 +108,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should stash values', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		expect(R.stashed.width).to.be.equal(3);
 		expect(R.stashed.height).to.be.equal(4);
 		expect(R.stashed.rect.origin).to.be.deep.equal({x:0, y:0});
@@ -133,7 +131,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should apply dimensions', function () {
-		var R = Rectangle(3,4);
+		var R = new Rectangle(3,4);
 		R.applyDimensions(1,2,5,6);
 		expect(R.x).to.be.equal(1);
 		expect(R.y).to.be.equal(2);
@@ -147,14 +145,14 @@ describe("Rectangle", function() {
 	});
 
 	it('should apply matrix', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.applyMatrix({a: 0.707106781186548, b: -0.707106781186548, c: 0.707106781186548, d: 0.707106781186548, e:0, f:0});
 		expect(~~R.width).to.be.equal(200);
 		expect(~~R.height).to.be.equal(100);
 	});
 
 	it('should get matrix', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.applyMatrix({a: 0.707106781186548, b: -0.707106781186548, c: 0.707106781186548, d: 0.707106781186548, e:0, f:0});
 		var M = R.matrix;
 		expect(M.a.toFixed(2)).to.be.equal('0.71');
@@ -166,7 +164,7 @@ describe("Rectangle", function() {
 	});
 
 	it('should get bounding rect', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.applyMatrix({a: 0.707106781186548, b: -0.707106781186548, c: 0.707106781186548, d: 0.707106781186548, e:0, f:0});
 		var B = R.bounds;
 		expect(B.x.toFixed(2)).to.be.equal('0.00');
@@ -176,38 +174,38 @@ describe("Rectangle", function() {
 	});
 
 	it('should get angle', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.applyMatrix({a: 0.707106781186548, b: -0.707106781186548, c: 0.707106781186548, d: 0.707106781186548, e:0, f:0});
 		expect(R.angle.toFixed(2)).to.be.equal('-45.00');
 	});
 
 	it('should get sx, sy', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		R.applyDimensions(400, 200);
 		expect(R.sx).to.be.equal(2);
 		expect(R.sy).to.be.equal(2);
 	});
 
 	it('should get cx, cy', function () {
-		var R = Rectangle(30, 20, 200, 100);
+		var R = new Rectangle(30, 20, 200, 100);
 		expect(R.cx).to.be.equal(130);
 		expect(R.cy).to.be.equal(70);
 	});
 
 	it('should apply matrix transforms', function () {
-		var R = Rectangle(0, 0, 200, 100);
+		var R = new Rectangle(0, 0, 200, 100);
 		var u = undefined;
 		R.absTransform(0, 0, 150 - R.cx, 150 - R.cy, 1, 0, 1);
-		expect( Matrix(R.matrix).equal({a:1,b:0,c:0,d:1,e:50,f:100}) ).to.be.ok;
+		expect( new Matrix(R.matrix).equal({a:1,b:0,c:0,d:1,e:50,f:100}) ).to.be.ok;
 
 		R.absTransform(150, 150, u, u, u, -45, u);
-		expect( Matrix(R.matrix).equal({a:0.707106,b:-0.707106,c:0.707106,d:0.707106,e:43.933982,f:185.355339}) ).to.be.ok;
+		expect( new Matrix(R.matrix).equal({a:0.707106,b:-0.707106,c:0.707106,d:0.707106,e:43.933982,f:185.355339}) ).to.be.ok;
 
 		R.absTransform(150, 150, u, u, 2, u, u);
-		expect( Matrix(R.matrix).equal({a:1.414213,b:-1.414213,c:1.414213,d:1.414213,e:-62.132034,f:220.710678}) ).to.be.ok;
+		expect( new Matrix(R.matrix).equal({a:1.414213,b:-1.414213,c:1.414213,d:1.414213,e:-62.132034,f:220.710678}) ).to.be.ok;
 
 		R.relTransform(150, 150, 1, -1, 0.5, 90, u);
-		expect( Matrix(R.matrix).equal({a:0.707106,b:0.707106,c:-0.707106,d:0.707106,e:115.644660,f:42.933982}) ).to.be.ok;
+		expect( new Matrix(R.matrix).equal({a:0.707106,b:0.707106,c:-0.707106,d:0.707106,e:115.644660,f:42.933982}) ).to.be.ok;
 	});
 
 

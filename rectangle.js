@@ -1,16 +1,14 @@
-(function() {
 
-	'use strict';
+	import {Matrix} from './matrix/matrix.js';
 
-	var abs = Math.abs;
-	var min = Math.min;
-	var max = Math.max;
-	var atan2 = Math.atan2;
-	var sqrt = Math.sqrt;
-	var pi = Math.PI;
-	var RAD2DEG = 180 / pi;
-	var DEG2RAD = pi / 180;
-	var boundaries;
+	const abs = Math.abs;
+	const min = Math.min;
+	const max = Math.max;
+	const atan2 = Math.atan2;
+	const sqrt = Math.sqrt;
+	const pi = Math.PI;
+	const RAD2DEG = 180 / pi;
+	const DEG2RAD = pi / 180;
 
 	// private methods
 	function transformPoint(from, matrix, to) {
@@ -68,53 +66,42 @@
 
 
 	// this is for bounds support, getters only, no init values
-	function BaseRectangle() {
-		this.origin = {x: 0, y: 0};
-		this.right = {x: 0, y: 0};
-		this.bottom = {x: 0, y: 0};
-	}
+	
+	class BaseRectangle {
+		constructor() {
+			this.origin = {x: 0, y: 0};
+			this.right = {x: 0, y: 0};
+			this.bottom = {x: 0, y: 0};
+		}
 
-	/*
-		i need BaseRectangle to have only getters, its much easier to just copy-paste those methods to Rectangle
-		prototype...than to set up some for loop to properly mix those 2 protos together ( and the mixin code itself is longer )
-	*/
-	BaseRectangle.prototype = {
-
-		// copy those 4 getters to Rectangle.prototype
 		get width() {
 			return distance(this.right, this.origin);
-		},
+		}
 
 		get height() {
 			return distance(this.bottom, this.origin);
-		},
+		}
 
 		get x() {
 			return this.origin.x;
-		},
+		}
 
 		get y() {
 			return this.origin.y;
-		},
+		}
 
 		// center is calculated in absolute values - eg. if x = 300 and width is 100, then center is 350
 		get cx() {
 			return this.origin.x + this.width/2;
-		},
+		}
 
 		get cy() {
 			return this.origin.y + this.height/2;
 		}
 
-	};
+	}
 
-	function create(Matrix) {
-
-		if ( !Matrix) {
-			throw new ReferenceError('Rectangle\'s dependency (Matrix) is not available');
-		}
-
-		boundaries = new BaseRectangle();
+	const boundaries = new BaseRectangle();
 
 		/*
 			0 -> new Rectangle()
@@ -125,12 +112,10 @@
 			clone -> new Rectangle( R, true )
 
 		*/
-		function Rectangle(x, y, width, height) {
+	export class Rectangle extends BaseRectangle {
+		constructor(x, y, width, height) {
 
-			if ( !(this instanceof Rectangle) ) {
-				return new Rectangle(x, y, width, height);
-			}
-			BaseRectangle.call(this);
+			super();
 			this.mtrx = Matrix();
 			var stash = this.stashed = {};
 
@@ -156,51 +141,51 @@
 			this.stash();
 		}
 
-		Rectangle.prototype = {
+		get width() {
+			return super.width
+		}
 
-			get width() {
-				return distance(this.right, this.origin);
-			},
+		get height() {
+			return super.height;
+		}
 
-			get height() {
-				return distance(this.bottom, this.origin);
-			},
+		get x() {
+			return super.x;
+		}
 
-			get x() {
-				return this.origin.x;
-			},
+		get y() {
+			return super.y;
+		}
 
-			get y() {
-				return this.origin.y;
-			},
+		// center is calculated in absolute values - eg. if x = 300 and width is 100, then center is 350
+		get cx() {
+			return super.cx
+		}
 
-			get cx() {
-				return this.origin.x + this.width/2;
-			},
+		get cy() {
+			return super.cy;
+		}
 
-			get cy() {
-				return this.origin.y + this.height/2;
-			},
-			// those methods above are copy-pasted from BaseRectangle prototype, do not change here
 
-			equal: function(r, p) {
+
+			equal(r, p) {
 				p || (p = 1E-6);
 				if ( this == r ) { return true; }
 				return abs(this.origin.x-r.origin.x)<=p && abs(this.origin.y-r.origin.y)<=p && abs(this.right.x-r.right.x)<=p &&
 						abs(this.right.y-r.right.y)<=p && abs(this.bottom.x-r.bottom.x)<=p && abs(this.bottom.y-r.bottom.y)<=p;
 
-			},
+			}
 
-			stash: function() {
+			stash() {
 				if ( !this.stashed.rect ) {
 					this.stashed.rect = new BaseRectangle();
 				}
 				applyPoints.call(this.stashed.rect, this.origin, this.right, this.bottom);
 				this.stashed.width = this.stashed.rect.width;
 				this.stashed.height = this.stashed.rect.height;
-			},
+			}
 
-			applyDimensions: function(x, y, width, height) {
+			applyDimensions(x, y, width, height) {
 				if ( width == undefined && height == undefined ) {
 					width = x;
 					height = y;
@@ -208,7 +193,7 @@
 					y = this.y;
 				}
 				return applyDimensions.call(this, +x||0, +y||0, +width||0, +height||0);
-			},
+			}
 
 			get matrix() {
 				return this.mtrx.set(
@@ -219,24 +204,24 @@
 					this.x,
 					this.y
 				);
-			},
+			}
 
-			applyMatrix: function(matrix) {
+			applyMatrix(matrix) {
 				var source = this.stashed.rect;
 				transformPoint(source.origin, matrix, this.origin);
 				transformPoint(source.right, matrix, this.right);
 				transformPoint(source.bottom, matrix, this.bottom);
 				return this;
-			},
+			}
 
 
 			get sx() {
 				return scale.call(this, true);
-			},
+			}
 
 			get sy() {
 				return scale.call(this, false);
-			},
+			}
 
 			get angle() {
 				var a = 0;
@@ -250,7 +235,7 @@
 					a = atan2( b.y - o.y, b.x - o.x ) - pi/2;
 				}
 				return a * RAD2DEG;
-			},
+			}
 
 			get bounds() {
 				var ry = this.right.y;
@@ -271,7 +256,7 @@
 				var maxY = max( oy, ry, by, fy );
 				// boundaries is immutable
 				return applyDimensions.call(boundaries, minX, minY, maxX-minX, maxY-minY);
-			},
+			}
 
 			set width(value) {
 				if ( value < 0 ) {
@@ -280,7 +265,7 @@
 				var angle = this.angle * DEG2RAD;
 				this.right.x = this.origin.x + Math.cos(angle) * value;
 				this.right.y = this.origin.y + Math.sin(angle) * value;
-			},
+			}
 
 			set height(value) {
 				if ( value < 0 ) {
@@ -289,27 +274,27 @@
 				var angle = this.angle * DEG2RAD;
 				this.bottom.x = this.origin.x + Math.sin(angle) * value;
 				this.bottom.y = this.origin.y + Math.cos(angle) * value;
-			},
+			}
 
 			set x(value) {
 				var delta = value - this.origin.x;
 				this.origin.x += delta;
 				this.right.x += delta;
 				this.bottom.x += delta;
-			},
+			}
 
 			set y(value) {
 				var delta = value - this.origin.y;
 				this.origin.y += delta;
 				this.right.y += delta;
 				this.bottom.y += delta;
-			},
+			}
 
 			// on both absTransform & relTransform the most usual case is uniform scaling, therefore sy is the
 			// last parameter and if omitted sx is used for sy
 
 			// transform to explicit values given
-			absTransform: function(originX, originY, x, y, sx, angle, sy) {
+			absTransform(originX, originY, x, y, sx, angle, sy) {
 				isNaN(angle) && (angle = this.angle);
 				isNaN(sx) && (sx = this.sx);
 				isNaN(sy) && (sy = sx);
@@ -317,11 +302,11 @@
 				isNaN(y) && (y = 0);
 				this.applyMatrix( this.matrix.transform(originX, originY, angle-this.angle, sx/this.sx, sy/this.sy, x, y) );
 				return this;
-			},
+			}
 
 			// apply values given to existing ones
 			// NB! scale values are multiplied, not added - so to keep some value as it was pass 0, except for scale pass 1
-			relTransform: function(originX, originY, x, y, sx, angle, sy) {
+			relTransform(originX, originY, x, y, sx, angle, sy) {
 				isNaN(angle) && (angle = 0);
 				!(+sx||0) && (sx = 1);
 				!(+sy||0) && (sy = sx);
@@ -331,18 +316,5 @@
 				return this;
 			}
 
-		};
+		}
 
-		return Rectangle;
-	}
-
-
-	if (typeof define === 'function' && define.amd) {
-		define(['./matrix'], create);
-	} else if (typeof module !== 'undefined' && module.exports) {
-		module.exports = create(require('@atirip/matrix'));
-	} else {
-		this.atirip ? ( this.atirip.Rectangle = create(this.atirip.Matrix) ) : create();
-	}
-
-}).call(this);
