@@ -160,8 +160,9 @@ Transform to explicit values given.
 </dl>
 
 ### relTransform(originX, originY, x, y, sx, angle, sy)
-Apply values passe to existing ones. For example if angle is 45 and 2 is passed, new angle will be 47. Scaling values are multiplied, if sx is 2 and 0.8 is passed, new sx will be 1.6. Otherwise same as <code>absTransform</code>.
-##Test
+Apply values passe to existing ones. For example if angle is 45 and 2 is passed, new angle will be 47. Scaling values are multiplied, if sx is 2 and 0.8 is passed, new sx will be 1.6. Otherwise same as <code>absTransform</code>.  
+
+## Test
 
 	$ npm test
 
